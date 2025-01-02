@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "poseurk:item/syringe",
+    "layer1": "poseurk:item/syringe_overlay"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "poseurk:item/syrine_pulling"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "poseurk",
+	"version": "${version}",
+	"name": "Poseurk",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"trashoflevillage"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/poseurk/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.trashoflevillage.poseurk.Poseurk"
+		],
+		"fabric-datagen": [
+			"io.github.trashoflevillage.poseurk.PoseurkDataGenerator"
+		],
+		"client": [
+			"io.github.trashoflevillage.poseurk.client.PoseurkClient"
+		]
+	},
+	"mixins": [
+		"poseurk.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

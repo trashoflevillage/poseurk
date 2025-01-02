@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "syringe",
+  "category": "equipment",
+  "pattern": [
+    "  i",
+    " g ",
+    "i  "
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "g": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "poseurk:syringe"
+  }
+}
