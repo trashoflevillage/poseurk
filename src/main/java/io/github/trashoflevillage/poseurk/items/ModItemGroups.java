@@ -19,6 +19,7 @@ public class ModItemGroups {
                     .icon(ModItems.SYRINGE::getDefaultStack)
                     .entries(((displayContext, entries) -> {
                         entries.add(ModItems.SYRINGE);
+                        entries.add(ModItems.EMPTY_VIAL);
                     }))
                     .build()
     );

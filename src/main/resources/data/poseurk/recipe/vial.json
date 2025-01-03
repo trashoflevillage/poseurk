@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "empty_vial",
+  "category": "equipment",
+  "pattern": [
+    "   ",
+    " g ",
+    " g "
+  ],
+  "key": {
+    "g": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "count": 2,
+    "id": "poseurk:empty_vial"
+  }
+}

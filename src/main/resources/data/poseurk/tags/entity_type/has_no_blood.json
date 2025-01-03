@@ -1,0 +1,15 @@
+{
+  "values": [
+    "minecraft:skeleton",
+    "minecraft:wither_skeleton",
+    "minecraft:bogged",
+    "minecraft:stray",
+    "minecraft:vex",
+    "minecraft:breeze",
+    "minecraft:blaze",
+    "minecraft:iron_golem",
+    "minecraft:snow_golem",
+    "minecraft:allay",
+    "minecraft:skeleton_horse"
+  ]
+}

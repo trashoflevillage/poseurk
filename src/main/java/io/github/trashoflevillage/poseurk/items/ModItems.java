@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
     public static final Item SYRINGE = registerItem("syringe", new SyringeItem(new Item.Settings().maxCount(1)));
+    public static final Item EMPTY_VIAL = registerItem("empty_vial", new Item(new Item.Settings()));
 
     public static void registerModItems() {
         Poseurk.LOGGER.info("Registering items for " + Poseurk.MOD_ID + ".");

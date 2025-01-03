@@ -1,9 +1,6 @@
 package io.github.trashoflevillage.poseurk.items.custom;
 
 import com.google.common.base.Predicates;
-import com.mojang.authlib.GameProfile;
-import io.github.trashoflevillage.poseurk.items.ModItems;
-import io.github.trashoflevillage.poseurk.util.ModTags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -14,47 +11,32 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SyringeItem extends Item {
-    public SyringeItem(Settings settings) {
+public class VialItem extends Item {
+    public VialItem(Settings settings) {
         super(settings);
     }
 
@@ -69,6 +51,26 @@ public class SyringeItem extends Item {
             return type.orElse(null);
         }
         else return null;
+    }
+
+    public static void setBloodAmount(ItemStack itemStack, int amount) {
+        if (amount > 4) amount = 4;
+        if (amount < 0) amount = 0;
+        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
+        nbt.putInt("storedBloodAmount", amount);
+        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    }
+
+    public static int getBloodAmount(ItemStack itemStack) {
+        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
+        if (nbt.contains("storedBloodAmount")) {
+            return nbt.getInt("storedBloodAmount");
+        }
+        else return 0;
+    }
+
+    public static void incrementBloodAmount(ItemStack itemStack) {
+        setBloodAmount(itemStack, getBloodAmount(itemStack) + 1);
     }
 
     public static void setEntityType(ItemStack itemStack, EntityType entityType) {
@@ -100,77 +102,6 @@ public class SyringeItem extends Item {
         NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
         nbt.remove("storedPlayerUUID");
         itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
-    }
-
-    public static float getPullProgress(int useTicks) {
-        float f = (float)useTicks / 20.0F;
-        f = (f * f + f * 2.0F) / 3.0F;
-        if (f > 1.0F) {
-            f = 1.0F;
-        }
-
-        return f;
-    }
-
-    @Override
-    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
-        return 72000;
-    }
-
-    @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.BOW;
-    }
-
-    @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack itemStack = user.getStackInHand(hand);
-        if (hasBlood(itemStack)) {
-            return TypedActionResult.fail(itemStack);
-        } else {
-            user.setCurrentHand(hand);
-            return TypedActionResult.consume(itemStack);
-        }
-    }
-
-    @Override
-    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
-        int DAMAGE_AMOUNT = 4;
-        StatusEffectInstance WEAKNESS_EFFECT = new StatusEffectInstance(StatusEffects.WEAKNESS, 600);
-
-        if (user instanceof PlayerEntity) {
-            int i = this.getMaxUseTime(stack, user) - remainingUseTicks;
-            float f = getPullProgress(i);
-            if (f == 1.0f) {
-                Vec3d lookDir = user.getRotationVec(1);
-                Vec3d reach = lookDir.multiply(32);
-                HitResult result = ProjectileUtil.raycast(user,
-                        user.getEyePos(), user.getEyePos().add(reach),
-                        user.getBoundingBox().stretch(reach).expand(1, 1, 1),
-                        Predicates.alwaysTrue(),
-                        4);
-                if (result instanceof EntityHitResult entityHitResult) {
-                    Entity entity = entityHitResult.getEntity();
-                    if (entity instanceof MobEntity mobEntity && !entity.getType().isIn(ModTags.EntityTypes.HAS_NO_BLOOD)) {
-                        entity.damage(new DamageSource(world.getRegistryManager()
-                                .get(RegistryKeys.DAMAGE_TYPE)
-                                .entryOf(DamageTypes.GENERIC), user, user), DAMAGE_AMOUNT);
-                        removePlayerUUID(stack);
-                        setEntityType(stack, entity.getType());
-                        mobEntity.addStatusEffect(WEAKNESS_EFFECT, user);
-                    } else {
-                        ((PlayerEntity) user).sendMessage(Text.translatable("item.poseurk.syringe.entity_has_no_blood").withColor(Colors.LIGHT_RED), true);
-                    }
-                } else {
-                    user.damage(new DamageSource(world.getRegistryManager()
-                            .get(RegistryKeys.DAMAGE_TYPE)
-                            .entryOf(DamageTypes.GENERIC), user, user), DAMAGE_AMOUNT);
-                    setPlayerUUID(stack, user.getUuid());
-                    setEntityType(stack, EntityType.PLAYER);
-                    user.addStatusEffect(WEAKNESS_EFFECT, user);
-                }
-            }
-        }
     }
 
     @Override
