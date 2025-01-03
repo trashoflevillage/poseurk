@@ -1,6 +1,7 @@
 package io.github.trashoflevillage.poseurk.client;
 
 import io.github.trashoflevillage.poseurk.items.ModItems;
+import io.github.trashoflevillage.poseurk.items.custom.SyringeItem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,6 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
+
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class PoseurkClient implements ClientModInitializer {
@@ -22,10 +25,9 @@ public class PoseurkClient implements ClientModInitializer {
         for (Block i : blocksWithTransparency)
             BlockRenderLayerMap.INSTANCE.putBlock(i, RenderLayer.getCutout());
 
-        registerItemColor(ModItems.SYRINGE, -0x00FFFF);
-    }
-
-    private void registerItemColor(Item item, int defaultColor) {
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : DyedColorComponent.getColor(stack, defaultColor), item);
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) ->
+                tintIndex == 0 ? -1 :
+                !SyringeItem.hasBlood(stack) ? 0xFFFFFF :
+                -(0xFFFFFF - SyringeItem.getBloodColorOfEntityType(SyringeItem.getEntityType(stack))), ModItems.SYRINGE);
     }
 }

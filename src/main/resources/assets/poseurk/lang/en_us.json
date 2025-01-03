@@ -1,4 +1,5 @@
 {
   "itemgroup.poseurk": "Poseurk",
-  "item.poseurk.syringe": "Syringe"
+  "item.poseurk.syringe": "Syringe",
+  "item.poseurk.syringe.empty_description": "Empty"
 }
