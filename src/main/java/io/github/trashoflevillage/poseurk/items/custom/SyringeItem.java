@@ -175,19 +175,19 @@ public class SyringeItem extends Item {
         Text text;
         if (hasBlood(stack)) {
             if (getEntityType(stack) != EntityType.PLAYER) {
-                text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(getBloodColorOfEntityType(getEntityType(stack)))).getFirst();
+                text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
             } else {
                 UUID uuid = getPlayerUUID(stack);
                 if (uuid != null) {
                     ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
                     if (playerEntity != null) {
                         text = playerEntity.getName()
-                                .getWithStyle(Style.EMPTY.withColor(getBloodColorOfEntityType(getEntityType(stack)))).getFirst();
+                                .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     } else {
-                        text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(getBloodColorOfEntityType(getEntityType(stack)))).getFirst();
+                        text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     }
                 } else {
-                    text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(getBloodColorOfEntityType(getEntityType(stack)))).getFirst();
+                    text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                 }
             }
         } else {
@@ -199,12 +199,11 @@ public class SyringeItem extends Item {
     public static int getBloodColorOfEntityType(EntityType<?> type) {
         if (type != null) {
             if (type == EntityType.PLAYER) return 0xFF0000;
+            if (type == EntityType.ENDERMAN || type == EntityType.ENDERMITE || type == EntityType.SHULKER) return 0xaa4cf7;
             if (type.isIn(EntityTypeTags.ZOMBIES)) return 0x108d26;
             if (type == EntityType.CREEPER) return 0x58f272;
-            if (type == EntityType.ENDERMAN || type == EntityType.ENDERMITE || type == EntityType.SHULKER)
-                return 0xa30c0c;
         }
-        return 0xb304ff;
+        return 0xa30c0c;
     }
 
     public static void emptyContents(ItemStack stack) {
