@@ -29,7 +29,7 @@ public class ModItemGroups {
     public static final ItemGroup BLOOD_AND_DNA_GROUP = Registry.register(Registries.ITEM_GROUP, Identifier.of(Poseurk.MOD_ID, "blood_and_dna"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.blood_and_dna"))
                     .icon(() -> {
-                        return SyringeItem.setEntityType(ModItems.SYRINGE.getDefaultStack(), EntityType.PLAYER);
+                        return SyringeItem.setEntityType(new ItemStack(ModItems.BLOOD_VIAL), EntityType.PLAYER);
                     })
                     .entries(((displayContext, entries) -> {
                         registerAllVials(entries);

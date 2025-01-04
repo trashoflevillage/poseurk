@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "syringe",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "poseurk:blood_vial"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "poseurk:empty_vial"
+  }
+}
