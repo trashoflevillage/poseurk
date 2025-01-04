@@ -1,6 +1,7 @@
 package io.github.trashoflevillage.poseurk.items.custom;
 
 import com.google.common.base.Predicates;
+import io.github.trashoflevillage.poseurk.items.ModComponents;
 import io.github.trashoflevillage.poseurk.util.ModTags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -43,51 +45,66 @@ public class SyringeItem extends Item {
     }
 
     public static boolean hasBlood(ItemStack stack) {
-        return getEntityType(stack) != null;
+        return getEntityType(stack).isPresent();
     }
 
-    public static EntityType<?> getEntityType(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        if (nbt.contains("storedEntityType")) {
-            Optional<EntityType<?>> type = EntityType.get(nbt.getString("storedEntityType"));
-            return type.orElse(null);
+    public static Optional<EntityType<?>> getEntityType(ItemStack itemStack) {
+        String id = itemStack.get(ModComponents.STORED_ENTITY_TYPE);
+        if (id != null) {
+            Optional<EntityType<?>> type = EntityType.get(id);
+            return type;
         }
-        else return null;
+        return Optional.empty();
     }
 
-    public static ItemStack setEntityType(ItemStack itemStack, EntityType entityType) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.putString("storedEntityType", Registries.ENTITY_TYPE.getId(entityType).toString());
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    public static ItemStack setEntityType(ItemStack itemStack, EntityType<?> entityType) {
+        itemStack.set(ModComponents.STORED_ENTITY_TYPE, Registries.ENTITY_TYPE.getId(entityType).toString());
         return itemStack;
     }
 
     public static ItemStack removeEntityType(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.remove("storedEntityType");
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        itemStack.remove(ModComponents.STORED_ENTITY_TYPE);
         return itemStack;
     }
 
     public static ItemStack setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.putUuid("storedPlayerUUID", playerUUID);
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        itemStack.set(ModComponents.STORED_PLAYER_UUID, playerUUID);
         return itemStack;
     }
 
     public static UUID getPlayerUUID(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        if (nbt.contains("storedPlayerUUID"))
-            return nbt.getUuid("storedPlayerUUID");
-        else return null;
+        return itemStack.get(ModComponents.STORED_PLAYER_UUID);
     }
 
     public static ItemStack removePlayerUUID(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.remove("storedPlayerUUID");
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        itemStack.remove(ModComponents.STORED_PLAYER_UUID);
         return itemStack;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        Text text;
+        if (hasBlood(stack)) {
+            if (getEntityType(stack).get() != EntityType.PLAYER) {
+                text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+            } else {
+                UUID uuid = getPlayerUUID(stack);
+                if (uuid != null) {
+                    ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
+                    if (playerEntity != null) {
+                        text = playerEntity.getName()
+                                .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                    } else {
+                        text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                    }
+                } else {
+                    text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                }
+            }
+        } else {
+            text = Text.translatable("item.poseurk.syringe.empty_description").getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+        }
+        tooltip.add(text);
     }
 
     public static float getPullProgress(int useTicks) {
@@ -159,32 +176,7 @@ public class SyringeItem extends Item {
                 }
             }
         }
-    }
-
-    @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        Text text;
-        if (hasBlood(stack)) {
-            if (getEntityType(stack) != EntityType.PLAYER) {
-                text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
-            } else {
-                UUID uuid = getPlayerUUID(stack);
-                if (uuid != null) {
-                    ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
-                    if (playerEntity != null) {
-                        text = playerEntity.getName()
-                                .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
-                    } else {
-                        text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
-                    }
-                } else {
-                    text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
-                }
-            }
-        } else {
-            text = Text.translatable("item.poseurk.syringe.empty_description").getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
-        }
-        tooltip.add(text);
+        user.playSound(SoundEvents.ENTITY_PLAYER_HURT_SWEET_BERRY_BUSH, 1.0f, 1.5f);
     }
 
     @Override

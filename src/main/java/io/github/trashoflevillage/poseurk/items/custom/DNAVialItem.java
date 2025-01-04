@@ -1,5 +1,6 @@
 package io.github.trashoflevillage.poseurk.items.custom;
 
+import io.github.trashoflevillage.poseurk.items.ModComponents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -24,55 +25,48 @@ public class DNAVialItem extends Item {
     }
 
     public static boolean hasBlood(ItemStack stack) {
-        return getEntityType(stack) != null;
+        return getEntityType(stack).isPresent();
     }
 
-    public static EntityType<?> getEntityType(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        if (nbt.contains("storedEntityType")) {
-            Optional<EntityType<?>> type = EntityType.get(nbt.getString("storedEntityType"));
-            return type.orElse(null);
+    public static Optional<EntityType<?>> getEntityType(ItemStack itemStack) {
+        String id = itemStack.get(ModComponents.STORED_ENTITY_TYPE);
+        if (id != null) {
+            Optional<EntityType<?>> type = EntityType.get(id);
+            return type;
         }
-        else return null;
+        return Optional.empty();
     }
 
-    public static void setEntityType(ItemStack itemStack, EntityType entityType) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.putString("storedEntityType", Registries.ENTITY_TYPE.getId(entityType).toString());
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    public static ItemStack setEntityType(ItemStack itemStack, EntityType<?> entityType) {
+        itemStack.set(ModComponents.STORED_ENTITY_TYPE, Registries.ENTITY_TYPE.getId(entityType).toString());
+        return itemStack;
     }
 
-    public static void removeEntityType(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.remove("storedEntityType");
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    public static ItemStack removeEntityType(ItemStack itemStack) {
+        itemStack.remove(ModComponents.STORED_ENTITY_TYPE);
+        return itemStack;
     }
 
-    public static void setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.putUuid("storedPlayerUUID", playerUUID);
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    public static ItemStack setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
+        itemStack.set(ModComponents.STORED_PLAYER_UUID, playerUUID);
+        return itemStack;
     }
 
     public static UUID getPlayerUUID(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        if (nbt.contains("storedPlayerUUID"))
-            return nbt.getUuid("storedPlayerUUID");
-        else return null;
+        return itemStack.get(ModComponents.STORED_PLAYER_UUID);
     }
 
-    public static void removePlayerUUID(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.remove("storedPlayerUUID");
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+    public static ItemStack removePlayerUUID(ItemStack itemStack) {
+        itemStack.remove(ModComponents.STORED_PLAYER_UUID);
+        return itemStack;
     }
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         Text text;
         if (hasBlood(stack)) {
-            if (getEntityType(stack) != EntityType.PLAYER) {
-                text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+            if (getEntityType(stack).get() != EntityType.PLAYER) {
+                text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
             } else {
                 UUID uuid = getPlayerUUID(stack);
                 if (uuid != null) {
@@ -81,10 +75,10 @@ public class DNAVialItem extends Item {
                         text = playerEntity.getName()
                                 .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     } else {
-                        text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     }
                 } else {
-                    text = getEntityType(stack).getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                    text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                 }
             }
         } else {
@@ -93,8 +87,14 @@ public class DNAVialItem extends Item {
         tooltip.add(text);
     }
 
-    public static void emptyContents(ItemStack stack) {
+    public static ItemStack emptyContents(ItemStack stack) {
         removePlayerUUID(stack);
         removeEntityType(stack);
+        return stack;
+    }
+
+    @Override
+    public ItemStack getDefaultStack() {
+        return emptyContents(super.getDefaultStack());
     }
 }

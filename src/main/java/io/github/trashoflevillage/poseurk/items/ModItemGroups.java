@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 public class ModItemGroups {
     public static final ItemGroup POSEURK_GROUP = Registry.register(Registries.ITEM_GROUP, Identifier.of(Poseurk.MOD_ID, "poseurk"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.poseurk"))
-                    .icon(ModItems.EMPTY_VIAL::getDefaultStack)
+                    .icon(() -> new ItemStack(ModItems.SYRINGE))
                     .entries(((displayContext, entries) -> {
                         entries.add(ModItems.SYRINGE.getDefaultStack());
                         entries.add(ModItems.EMPTY_VIAL.getDefaultStack());
@@ -28,9 +28,8 @@ public class ModItemGroups {
 
     public static final ItemGroup BLOOD_AND_DNA_GROUP = Registry.register(Registries.ITEM_GROUP, Identifier.of(Poseurk.MOD_ID, "blood_and_dna"),
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.blood_and_dna"))
-                    .icon(() -> {
-                        return SyringeItem.setEntityType(new ItemStack(ModItems.BLOOD_VIAL), EntityType.PLAYER);
-                    })
+                    // CULPRIT!!!!!
+                    .icon(() -> BloodVialItem.setEntityType(new ItemStack(ModItems.BLOOD_VIAL), EntityType.PLAYER))
                     .entries(((displayContext, entries) -> {
                         registerAllVials(entries);
                     }))
@@ -44,10 +43,10 @@ public class ModItemGroups {
     private static void registerAllVials(ItemGroup.Entries entries) {
         Registries.ENTITY_TYPE.forEach((entityType -> {
             if ((entityType.getSpawnGroup() != SpawnGroup.MISC || entityType == EntityType.PLAYER || entityType == EntityType.VILLAGER) && !entityType.isIn(ModTags.EntityTypes.HAS_NO_BLOOD)) {
-                ItemStack bloodVial = ModItems.BLOOD_VIAL.getDefaultStack();
+                ItemStack bloodVial = ModItems.BLOOD_VIAL.getDefaultStack().copy();
                 BloodVialItem.setEntityType(bloodVial, entityType);
                 entries.add(bloodVial);
-                ItemStack dnaVial = ModItems.DNA_VIAL.getDefaultStack();
+                ItemStack dnaVial = ModItems.DNA_VIAL.getDefaultStack().copy();
                 BloodVialItem.setEntityType(dnaVial, entityType);
                 entries.add(dnaVial);
             }

@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "group": "syringe",
+  "group": "empty_vial",
   "category": "equipment",
   "ingredients": [
     {

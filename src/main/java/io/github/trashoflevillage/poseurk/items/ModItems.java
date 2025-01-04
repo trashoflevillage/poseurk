@@ -4,14 +4,9 @@ import io.github.trashoflevillage.poseurk.Poseurk;
 import io.github.trashoflevillage.poseurk.items.custom.BloodVialItem;
 import io.github.trashoflevillage.poseurk.items.custom.DNAVialItem;
 import io.github.trashoflevillage.poseurk.items.custom.SyringeItem;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 public class ModItems {

@@ -4,12 +4,30 @@
     "layer0": "poseurk:item/syringe",
     "layer1": "poseurk:item/syringe_overlay"
   },
-  "overrides": [
-    {
-      "predicate": {
-        "pulling": 1
-      },
-      "model": "poseurk:item/syrine_pulling"
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [
+        -25,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        -3
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -25,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        -3
+      ]
     }
-  ]
+  }
 }
