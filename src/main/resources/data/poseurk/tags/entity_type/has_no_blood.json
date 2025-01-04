@@ -12,6 +12,8 @@
     "minecraft:allay",
     "minecraft:skeleton_horse",
     "minecraft:wither",
-    "minecraft:ender_dragon"
+    "minecraft:ender_dragon",
+    "minecraft:slime",
+    "minecraft:magma_cube"
   ]
 }

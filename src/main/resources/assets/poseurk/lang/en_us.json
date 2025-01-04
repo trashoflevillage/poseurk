@@ -5,5 +5,6 @@
   "item.poseurk.syringe.empty_description": "Empty",
   "item.poseurk.syringe.entity_has_no_blood": "This mob's blood cannot be extracted",
   "item.poseurk.empty_vial": "Empty Vial",
-  "item.poseurk.blood_vial": "Blood Vial"
+  "item.poseurk.blood_vial": "Blood Vial",
+  "item.poseurk.dna_vial": "DNA Vial"
 }

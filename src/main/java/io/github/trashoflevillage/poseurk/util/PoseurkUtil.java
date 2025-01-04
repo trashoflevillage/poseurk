@@ -52,7 +52,7 @@ public class PoseurkUtil {
         return entityDNAColorCache.get(type);
     }
 
-    // ChatGPT helped IMMENSELY with this process...
+    // ChatGPT helped IMMENSELY with this system...
     // I had no idea where to begin, and I'm not going to take credit for something written largely by AI.
     public static int generateDNAColorOfEntityType(EntityType<?> type) {
         if (type != null && type != EntityType.PLAYER) {
@@ -71,7 +71,7 @@ public class PoseurkUtil {
                 e.printStackTrace();
             }
         }
-        return 0xa30c0c;
+        return 0x999999;
     }
 
     private static Optional<Identifier> getEntityTexture(EntityType<?> type) {
@@ -122,6 +122,6 @@ public class PoseurkUtil {
             return (avgRed << 16) | (avgGreen << 8) | avgBlue;
         }
 
-        return 0xa30c0c;
+        return 0x999999;
     }
 }
