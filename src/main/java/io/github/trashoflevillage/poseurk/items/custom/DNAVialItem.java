@@ -1,42 +1,25 @@
 package io.github.trashoflevillage.poseurk.items.custom;
 
-import com.google.common.base.Predicates;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class VialItem extends Item {
-    public VialItem(Settings settings) {
+public class DNAVialItem extends Item {
+    public DNAVialItem(Settings settings) {
         super(settings);
     }
 
@@ -51,26 +34,6 @@ public class VialItem extends Item {
             return type.orElse(null);
         }
         else return null;
-    }
-
-    public static void setBloodAmount(ItemStack itemStack, int amount) {
-        if (amount > 4) amount = 4;
-        if (amount < 0) amount = 0;
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        nbt.putInt("storedBloodAmount", amount);
-        itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
-    }
-
-    public static int getBloodAmount(ItemStack itemStack) {
-        NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
-        if (nbt.contains("storedBloodAmount")) {
-            return nbt.getInt("storedBloodAmount");
-        }
-        else return 0;
-    }
-
-    public static void incrementBloodAmount(ItemStack itemStack) {
-        setBloodAmount(itemStack, getBloodAmount(itemStack) + 1);
     }
 
     public static void setEntityType(ItemStack itemStack, EntityType entityType) {

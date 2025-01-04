@@ -1,5 +1,6 @@
 {
   "itemgroup.poseurk": "Poseurk",
+  "itemgroup.blood_and_dna": "Blood & DNA",
   "item.poseurk.syringe": "Syringe",
   "item.poseurk.syringe.empty_description": "Empty",
   "item.poseurk.syringe.entity_has_no_blood": "This mob's blood cannot be extracted",

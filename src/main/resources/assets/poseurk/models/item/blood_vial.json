@@ -1,0 +1,18 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "poseurk:item/vial",
+    "layer1": "poseurk:item/vial_overlay_1",
+    "layer2": "poseurk:item/vial_overlay_2",
+    "layer3": "poseurk:item/vial_overlay_3",
+    "layer4": "poseurk:item/vial_overlay_4"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "poseurk:item/syrine_pulling"
+    }
+  ]
+}

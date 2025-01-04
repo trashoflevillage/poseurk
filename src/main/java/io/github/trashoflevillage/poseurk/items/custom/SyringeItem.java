@@ -1,8 +1,6 @@
 package io.github.trashoflevillage.poseurk.items.custom;
 
 import com.google.common.base.Predicates;
-import com.mojang.authlib.GameProfile;
-import io.github.trashoflevillage.poseurk.items.ModItems;
 import io.github.trashoflevillage.poseurk.util.ModTags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
@@ -19,35 +17,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,22 +55,25 @@ public class SyringeItem extends Item {
         else return null;
     }
 
-    public static void setEntityType(ItemStack itemStack, EntityType entityType) {
+    public static ItemStack setEntityType(ItemStack itemStack, EntityType entityType) {
         NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
         nbt.putString("storedEntityType", Registries.ENTITY_TYPE.getId(entityType).toString());
         itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        return itemStack;
     }
 
-    public static void removeEntityType(ItemStack itemStack) {
+    public static ItemStack removeEntityType(ItemStack itemStack) {
         NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
         nbt.remove("storedEntityType");
         itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        return itemStack;
     }
 
-    public static void setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
+    public static ItemStack setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
         NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
         nbt.putUuid("storedPlayerUUID", playerUUID);
         itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        return itemStack;
     }
 
     public static UUID getPlayerUUID(ItemStack itemStack) {
@@ -96,10 +83,11 @@ public class SyringeItem extends Item {
         else return null;
     }
 
-    public static void removePlayerUUID(ItemStack itemStack) {
+    public static ItemStack removePlayerUUID(ItemStack itemStack) {
         NbtCompound nbt = itemStack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).getNbt();
         nbt.remove("storedPlayerUUID");
         itemStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        return itemStack;
     }
 
     public static float getPullProgress(int useTicks) {
@@ -199,8 +187,14 @@ public class SyringeItem extends Item {
         tooltip.add(text);
     }
 
-    public static void emptyContents(ItemStack stack) {
+    @Override
+    public ItemStack getDefaultStack() {
+        return emptyContents(super.getDefaultStack());
+    }
+
+    public static ItemStack emptyContents(ItemStack stack) {
         removePlayerUUID(stack);
         removeEntityType(stack);
+        return stack;
     }
 }

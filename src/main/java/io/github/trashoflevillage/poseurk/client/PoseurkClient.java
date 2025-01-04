@@ -24,7 +24,17 @@ public class PoseurkClient implements ClientModInitializer {
 
         ColorProviderRegistry.ITEM.register((stack, tintIndex) ->
                 tintIndex == 0 ? -1 :
-                !SyringeItem.hasBlood(stack) ? 0xFFFFFF :
-                -(0xFFFFFF - (PoseurkUtil.mixColors(0xa30c0c, PoseurkUtil.getDNAColorOfEntityType(SyringeItem.getEntityType(stack))))), ModItems.SYRINGE);
+                    !SyringeItem.hasBlood(stack) ? 0xFFFFFF :
+                        -(0xFFFFFF - (PoseurkUtil.mixColors(0xa30c0c, PoseurkUtil.getDNAColorOfEntityType(SyringeItem.getEntityType(stack))))), ModItems.SYRINGE);
+
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) ->
+                tintIndex == 0 ? -1 :
+                    !SyringeItem.hasBlood(stack) ? 0xFFFFFF :
+                        -(0xFFFFFF - (PoseurkUtil.mixColors(0xa30c0c, PoseurkUtil.getDNAColorOfEntityType(SyringeItem.getEntityType(stack))))), ModItems.BLOOD_VIAL);
+
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) ->
+                tintIndex == 0 ? -1 :
+                        !SyringeItem.hasBlood(stack) ? 0xFFFFFF :
+                                -(0xFFFFFF - PoseurkUtil.getDNAColorOfEntityType(SyringeItem.getEntityType(stack))), ModItems.DNA_VIAL);
     }
 }
