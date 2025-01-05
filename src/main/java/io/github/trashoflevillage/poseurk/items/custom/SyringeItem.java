@@ -3,6 +3,7 @@ package io.github.trashoflevillage.poseurk.items.custom;
 import com.google.common.base.Predicates;
 import io.github.trashoflevillage.poseurk.items.ModComponents;
 import io.github.trashoflevillage.poseurk.util.ModTags;
+import io.github.trashoflevillage.poseurk.util.PoseurkUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -68,7 +69,8 @@ public class SyringeItem extends Item {
     }
 
     public static ItemStack setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
-        itemStack.set(ModComponents.STORED_PLAYER_UUID, playerUUID);
+        if (playerUUID == null) removePlayerUUID(itemStack);
+        else itemStack.set(ModComponents.STORED_PLAYER_UUID, playerUUID);
         return itemStack;
     }
 
@@ -90,12 +92,17 @@ public class SyringeItem extends Item {
             } else {
                 UUID uuid = getPlayerUUID(stack);
                 if (uuid != null) {
-                    ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
-                    if (playerEntity != null) {
-                        text = playerEntity.getName()
-                                .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                    String potentialUsername = PoseurkUtil.getUsernameFromUUID(uuid);
+                    if (potentialUsername != null) {
+                        text = Text.of(potentialUsername).getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     } else {
-                        text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
+                        if (playerEntity != null) {
+                            text = playerEntity.getName()
+                                    .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        } else {
+                            text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        }
                     }
                 } else {
                     text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
@@ -174,9 +181,9 @@ public class SyringeItem extends Item {
                     setEntityType(stack, EntityType.PLAYER);
                     user.addStatusEffect(WEAKNESS_EFFECT, user);
                 }
+                user.playSound(SoundEvents.ENTITY_PLAYER_HURT_SWEET_BERRY_BUSH, 1.0f, 1.5f);
             }
         }
-        user.playSound(SoundEvents.ENTITY_PLAYER_HURT_SWEET_BERRY_BUSH, 1.0f, 1.5f);
     }
 
     @Override

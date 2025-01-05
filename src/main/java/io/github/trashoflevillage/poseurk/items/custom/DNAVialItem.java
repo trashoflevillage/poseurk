@@ -1,6 +1,7 @@
 package io.github.trashoflevillage.poseurk.items.custom;
 
 import io.github.trashoflevillage.poseurk.items.ModComponents;
+import io.github.trashoflevillage.poseurk.util.PoseurkUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -48,7 +49,8 @@ public class DNAVialItem extends Item {
     }
 
     public static ItemStack setPlayerUUID(ItemStack itemStack, UUID playerUUID) {
-        itemStack.set(ModComponents.STORED_PLAYER_UUID, playerUUID);
+        if (playerUUID == null) removePlayerUUID(itemStack);
+        else itemStack.set(ModComponents.STORED_PLAYER_UUID, playerUUID);
         return itemStack;
     }
 
@@ -70,12 +72,17 @@ public class DNAVialItem extends Item {
             } else {
                 UUID uuid = getPlayerUUID(stack);
                 if (uuid != null) {
-                    ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
-                    if (playerEntity != null) {
-                        text = playerEntity.getName()
-                                .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                    String potentialUsername = PoseurkUtil.getUsernameFromUUID(uuid);
+                    if (potentialUsername != null) {
+                        text = Text.of(potentialUsername).getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     } else {
-                        text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
+                        if (playerEntity != null) {
+                            text = playerEntity.getName()
+                                    .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        } else {
+                            text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        }
                     }
                 } else {
                     text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();

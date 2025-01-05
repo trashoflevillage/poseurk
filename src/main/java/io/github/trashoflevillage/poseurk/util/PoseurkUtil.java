@@ -1,24 +1,40 @@
 package io.github.trashoflevillage.poseurk.util;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTextures;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.yggdrasil.ProfileResult;
+import io.github.trashoflevillage.poseurk.items.ModComponents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Optional;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.*;
 
 public class PoseurkUtil {
     private static final HashMap<EntityType<?>, Integer> entityDNAColorCache = new HashMap<>();
+    private static final HashMap<UUID, Integer> playerDNAColorCache = new HashMap<>();
+    private static final HashMap<UUID, String> playerUsernameCache = new HashMap<>();
 
     public static int mixColors(int colorA, int colorB) {
         float[] arrayA = getColorArray(colorA);
@@ -47,8 +63,14 @@ public class PoseurkUtil {
     }
 
 
-    public static int getDNAColorOfEntityType(EntityType<?> type) {
-        if (!entityDNAColorCache.containsKey(type)) entityDNAColorCache.put(type, generateDNAColorOfEntityType(type));
+    public static int getDNAColorOfEntityType(EntityType<?> type, ItemStack stack) {
+        if (type != EntityType.PLAYER && !entityDNAColorCache.containsKey(type)) entityDNAColorCache.put(type, generateDNAColorOfEntityType(type));
+        else if (type == EntityType.PLAYER) {
+            UUID uuid = stack.get(ModComponents.STORED_PLAYER_UUID);
+            if (!playerDNAColorCache.containsKey(uuid))
+                playerDNAColorCache.put(uuid, generateDNAColorOfPlayer(uuid));
+            return playerDNAColorCache.get(uuid);
+        }
         return entityDNAColorCache.get(type);
     }
 
@@ -70,6 +92,14 @@ public class PoseurkUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        return 0x999999;
+    }
+
+    public static int generateDNAColorOfPlayer(UUID playerUUID) {
+        BufferedImage image = fetchPlayerSkinAsImage(playerUUID);
+        if (image != null) {
+            return getAverageColor(image);
         }
         return 0x999999;
     }
@@ -123,5 +153,72 @@ public class PoseurkUtil {
         }
 
         return 0x999999;
+    }
+
+    public static BufferedImage fetchPlayerSkinAsImage(UUID uuid) {
+        if (uuid == null) return null;
+
+        try {
+            // Mojang API URL (UUID without dashes)
+            String uuidString = uuid.toString().replace("-", "");
+            URL profileUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuidString);
+
+            // Read and log the response
+            try (InputStreamReader reader = new InputStreamReader(profileUrl.openStream())) {
+                JsonObject profileJson = JsonParser.parseReader(reader).getAsJsonObject();
+
+                if (!profileJson.has("properties")) {
+                    return null;
+                }
+
+                JsonObject texturesProperty = profileJson.getAsJsonArray("properties").get(0).getAsJsonObject();
+                String decodedTextures = new String(Base64.getDecoder().decode(texturesProperty.get("value").getAsString()));
+                JsonObject texturesJson = JsonParser.parseString(decodedTextures).getAsJsonObject();
+
+                if (!texturesJson.has("textures") || !texturesJson.getAsJsonObject("textures").has("SKIN")) {
+                    return null;
+                }
+
+                String skinUrl = texturesJson.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
+                return ImageIO.read(new URL(skinUrl));
+            }
+        } catch (IOException | IllegalStateException e) {
+            return null;
+        }
+    }
+
+    public static UUID getUUIDFromStringSafely(String name) {
+        try {
+            return UUID.fromString(name);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String getUsernameFromUUID(UUID uuid) {
+        if (!playerUsernameCache.containsKey(uuid)) playerUsernameCache.put(uuid, fetchUsernameFromUUID(uuid));
+        return playerUsernameCache.get(uuid);
+    }
+
+    public static String fetchUsernameFromUUID(UUID uuid) {
+        if (uuid == null) return null;
+
+        try {
+            String uuidString = uuid.toString().replace("-", "");
+
+            URL profileUrl = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuidString);
+
+            try (InputStreamReader reader = new InputStreamReader(profileUrl.openStream())) {
+                JsonObject profileJson = JsonParser.parseReader(reader).getAsJsonObject();
+
+                if (profileJson.has("name")) {
+                    return profileJson.get("name").getAsString();
+                } else {
+                    return null;
+                }
+            }
+        } catch (IOException | IllegalStateException e) {
+            return null;
+        }
     }
 }

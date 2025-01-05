@@ -4,6 +4,7 @@ import io.github.trashoflevillage.poseurk.blocks.ModBlocks;
 import io.github.trashoflevillage.poseurk.items.ModComponents;
 import io.github.trashoflevillage.poseurk.items.ModItemGroups;
 import io.github.trashoflevillage.poseurk.items.ModItems;
+import io.github.trashoflevillage.poseurk.recipes.ModSpecialRecipes;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -27,5 +28,6 @@ public class Poseurk implements ModInitializer {
 		ModItems.registerModItems();
 		ModItemGroups.registerItemGroups();
 		ModComponents.registerComponents();
+		ModSpecialRecipes.registerSpecialRecipes();
 	}
 }

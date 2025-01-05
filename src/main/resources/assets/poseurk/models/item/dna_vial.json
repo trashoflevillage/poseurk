@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "poseurk:item/vial",
     "layer1": "poseurk:item/vial_overlay"
