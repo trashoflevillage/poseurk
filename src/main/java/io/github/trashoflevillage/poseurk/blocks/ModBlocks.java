@@ -1,6 +1,7 @@
 package io.github.trashoflevillage.poseurk.blocks;
 
 import io.github.trashoflevillage.poseurk.Poseurk;
+import io.github.trashoflevillage.poseurk.blocks.custom.CentrifugeBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,6 +17,8 @@ import net.minecraft.util.Identifier;
 import java.util.function.ToIntFunction;
 
 public class ModBlocks {
+    public static final Block CENTRIFUGE = registerBlock("centrifuge", new CentrifugeBlock(AbstractBlock.Settings.copy(Blocks.BREWING_STAND)));
+
     private static Block registerBlock(String name, Block block) {
         return registerBlock(name, block, true);
     }

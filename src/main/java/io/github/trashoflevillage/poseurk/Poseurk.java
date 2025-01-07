@@ -1,6 +1,7 @@
 package io.github.trashoflevillage.poseurk;
 
 import io.github.trashoflevillage.poseurk.blocks.ModBlocks;
+import io.github.trashoflevillage.poseurk.blocks.blockentities.ModBlockEntities;
 import io.github.trashoflevillage.poseurk.items.ModComponents;
 import io.github.trashoflevillage.poseurk.items.ModItemGroups;
 import io.github.trashoflevillage.poseurk.items.ModItems;
@@ -25,6 +26,7 @@ public class Poseurk implements ModInitializer {
 		// Proceed with mild caution.
 
 		ModBlocks.registerModBlocks();
+		ModBlockEntities.registerBlockEntities();
 		ModItems.registerModItems();
 		ModItemGroups.registerItemGroups();
 		ModComponents.registerComponents();

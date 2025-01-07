@@ -1,6 +1,7 @@
 package io.github.trashoflevillage.poseurk.items;
 
 import io.github.trashoflevillage.poseurk.Poseurk;
+import io.github.trashoflevillage.poseurk.blocks.ModBlocks;
 import io.github.trashoflevillage.poseurk.items.custom.BloodVialItem;
 import io.github.trashoflevillage.poseurk.items.custom.SyringeItem;
 import io.github.trashoflevillage.poseurk.util.ModTags;
@@ -22,6 +23,7 @@ public class ModItemGroups {
                     .entries(((displayContext, entries) -> {
                         entries.add(ModItems.SYRINGE.getDefaultStack());
                         entries.add(ModItems.EMPTY_VIAL.getDefaultStack());
+                        entries.add(ModBlocks.CENTRIFUGE.asItem());
                     }))
                     .build()
     );
