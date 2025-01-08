@@ -17,9 +17,13 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +33,7 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
 
     protected final PropertyDelegate propertyDelegate;
     private int progress = 0;
-    private int maxProgress = 72;
+    private int maxProgress = 600;
 
     public CentrifugeBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CENTRIFUGE_BLOCK_ENTITY, pos, state);
@@ -105,11 +109,18 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
                 if (hasCraftingFinished()) {
                     this.craftItem();
                     this.resetProgress();
+                    world.playSound(null, pos, SoundEvents.ENTITY_BREEZE_SHOOT, SoundCategory.BLOCKS, 0.8f, 1.2f);
+                } else {
+                    if (world.getTime() % 60 == 0)
+                        world.playSound(null, pos, SoundEvents.ENTITY_BREEZE_IDLE_GROUND, SoundCategory.BLOCKS, 0.8f, 1.2f);
                 }
             } else {
                 this.resetProgress();
                 markDirty(world, pos, state);
             }
+        } else {
+            this.resetProgress();
+            markDirty(world, pos, state);
         }
     }
 
@@ -147,5 +158,15 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
     @Override
     public int getMaxCountPerStack() {
         return 1;
+    }
+
+    @Override
+    public boolean canExtract(int slot, ItemStack stack, Direction side) {
+        return stack.isOf(ModItems.DNA_VIAL);
+    }
+
+    @Override
+    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
+        return getStack(slot).getCount() < 1;
     }
 }
