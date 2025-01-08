@@ -171,15 +171,25 @@ public class SyringeItem extends Item {
                         setEntityType(stack, entity.getType());
                         mobEntity.addStatusEffect(WEAKNESS_EFFECT, user);
                     } else {
-                        ((PlayerEntity) user).sendMessage(Text.translatable("item.poseurk.syringe.entity_has_no_blood").withColor(Colors.LIGHT_RED), true);
+                        if (entity instanceof PlayerEntity playerEntity && !entity.getType().isIn(ModTags.EntityTypes.HAS_NO_BLOOD)) {
+                            entity.damage(new DamageSource(world.getRegistryManager()
+                                    .get(RegistryKeys.DAMAGE_TYPE)
+                                    .entryOf(DamageTypes.GENERIC), user, user), DAMAGE_AMOUNT);
+                            removePlayerUUID(stack);
+                            setEntityType(stack, entity.getType());
+                            setPlayerUUID(stack, playerEntity.getUuid());
+                            playerEntity.addStatusEffect(WEAKNESS_EFFECT, user);
+                        } else ((PlayerEntity) user).sendMessage(Text.translatable("item.poseurk.syringe.entity_has_no_blood").withColor(Colors.LIGHT_RED), true);
                     }
                 } else {
-                    user.damage(new DamageSource(world.getRegistryManager()
-                            .get(RegistryKeys.DAMAGE_TYPE)
-                            .entryOf(DamageTypes.GENERIC), user, user), DAMAGE_AMOUNT);
-                    setPlayerUUID(stack, user.getUuid());
-                    setEntityType(stack, EntityType.PLAYER);
-                    user.addStatusEffect(WEAKNESS_EFFECT, user);
+                    if (!user.getType().isIn(ModTags.EntityTypes.HAS_NO_BLOOD)) {
+                        user.damage(new DamageSource(world.getRegistryManager()
+                                .get(RegistryKeys.DAMAGE_TYPE)
+                                .entryOf(DamageTypes.GENERIC), user, user), DAMAGE_AMOUNT);
+                        setPlayerUUID(stack, user.getUuid());
+                        setEntityType(stack, EntityType.PLAYER);
+                        user.addStatusEffect(WEAKNESS_EFFECT, user);
+                    } else ((PlayerEntity) user).sendMessage(Text.translatable("item.poseurk.syringe.entity_has_no_blood").withColor(Colors.LIGHT_RED), true);
                 }
                 user.playSound(SoundEvents.ENTITY_PLAYER_HURT_SWEET_BERRY_BUSH, 1.0f, 1.5f);
             }
