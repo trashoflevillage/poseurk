@@ -22,6 +22,9 @@ public class CentrifugeScreenHandler extends ScreenHandler {
     private final PropertyDelegate propertyDelegate;
     public final CentrifugeBlockEntity blockEntity;
 
+    public static final int WIND_CHARGE_INPUT_SLOT = 0;
+    public static final int FIRST_BLOOD_INPUT_SLOT = 1;
+
     public CentrifugeScreenHandler(int syncId, PlayerInventory inventory, CentrifugeData data) {
         this(syncId, inventory, inventory.player.getWorld().getBlockEntity(data.pos()),
                 new ArrayPropertyDelegate(2));
@@ -29,15 +32,16 @@ public class CentrifugeScreenHandler extends ScreenHandler {
 
     public CentrifugeScreenHandler(int syncId, PlayerInventory playerInventory, BlockEntity blockEntity, PropertyDelegate arrayPropertyDelegate) {
         super(ModScreenHandlers.CENTRIFUGE_SCREEN_HANDLER, syncId);
-        checkSize((Inventory) blockEntity, 3);
+        checkSize((Inventory) blockEntity, 4);
         this.inventory = ((Inventory) blockEntity);
         playerInventory.onOpen(playerInventory.player);
         this.propertyDelegate = arrayPropertyDelegate;
         this.blockEntity = (CentrifugeBlockEntity) blockEntity;
 
-        this.addSlot(new Slot(inventory, 0, 56, 51));
-        this.addSlot(new Slot(inventory, 1, 79, 58));
-        this.addSlot(new Slot(inventory, 2, 102, 51));
+        this.addSlot(new Slot(inventory, WIND_CHARGE_INPUT_SLOT, 79, 10));
+        this.addSlot(new Slot(inventory, FIRST_BLOOD_INPUT_SLOT, 56, 56));
+        this.addSlot(new Slot(inventory, FIRST_BLOOD_INPUT_SLOT + 1, 79, 63));
+        this.addSlot(new Slot(inventory, FIRST_BLOOD_INPUT_SLOT + 2, 102, 56));
 
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
@@ -92,6 +96,7 @@ public class CentrifugeScreenHandler extends ScreenHandler {
     public boolean isCrafting() {
         return propertyDelegate.get(0) > 0;
     }
+
     public int getScaledProgress() {
         int progress = this.propertyDelegate.get(0);
         int maxProgress = this.propertyDelegate.get(1);  // Max Progress

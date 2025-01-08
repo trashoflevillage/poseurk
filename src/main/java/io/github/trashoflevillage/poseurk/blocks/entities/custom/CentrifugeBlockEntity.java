@@ -4,6 +4,7 @@ import io.github.trashoflevillage.poseurk.blocks.entities.ModBlockEntities;
 import io.github.trashoflevillage.poseurk.items.ModItems;
 import io.github.trashoflevillage.poseurk.items.custom.BloodVialItem;
 import io.github.trashoflevillage.poseurk.items.custom.DNAVialItem;
+import io.github.trashoflevillage.poseurk.screen.CentrifugeScreen;
 import io.github.trashoflevillage.poseurk.screen.CentrifugeScreenHandler;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.PropertyDelegate;
@@ -28,8 +30,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory, ImplementedInventory {
-    private final int SLOTS = 3;
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(3, ItemStack.EMPTY);
+    private final int SLOTS = 4;
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
     protected final PropertyDelegate propertyDelegate;
     private int progress = 0;
@@ -101,7 +103,7 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
             return;
         }
 
-        if (world.isReceivingRedstonePower(pos)) {
+        if (getStack(CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT).isOf(Items.WIND_CHARGE)) {
             if (this.hasRecipes()) {
                 this.increaseCraftProgress();
                 markDirty(world, pos, state);
@@ -129,7 +131,8 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
     }
 
     private void craftItem() {
-        for (int i = 0; i < SLOTS; i++) {
+        removeStack(CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT);
+        for (int i = CentrifugeScreenHandler.FIRST_BLOOD_INPUT_SLOT; i < SLOTS; i++) {
             if (getStack(i).isOf(ModItems.BLOOD_VIAL)) {
                 ItemStack bloodStack = getStack(i);
                 setStack(i,
@@ -162,11 +165,16 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
 
     @Override
     public boolean canExtract(int slot, ItemStack stack, Direction side) {
-        return stack.isOf(ModItems.DNA_VIAL);
+        if (slot >= CentrifugeScreenHandler.FIRST_BLOOD_INPUT_SLOT)
+            return stack.isOf(ModItems.DNA_VIAL);
+        return false;
     }
 
     @Override
     public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
-        return getStack(slot).getCount() < 1;
+        if (slot >= CentrifugeScreenHandler.FIRST_BLOOD_INPUT_SLOT)
+            return getStack(slot).getCount() < 1;
+        if (slot == CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT) return stack.isOf(Items.WIND_CHARGE) && getStack(slot).getCount() < 1;
+        return false;
     }
 }

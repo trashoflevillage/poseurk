@@ -32,14 +32,13 @@ public class CentrifugeScreen extends HandledScreen<CentrifugeScreenHandler> {
 
     private void renderProgressArrow(DrawContext context, int x, int y) {
         if (handler.isCrafting()) {
-            context.drawTexture(TEXTURE, x + 84, y + 23, 176, 0, 8, handler.getScaledProgress());
+            context.drawTexture(TEXTURE, x + 84, y + 28, 176, 0, 8, handler.getScaledProgress());
         }
     }
 
     @Override
     protected void init() {
         super.init();
-        this.titleX = (this.backgroundWidth - this.textRenderer.getWidth(this.title)) / 2;
     }
 
     @Override
