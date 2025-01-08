@@ -1,8 +1,7 @@
 package io.github.trashoflevillage.poseurk.client.entity.renderers;
 
 import io.github.trashoflevillage.poseurk.Poseurk;
-import io.github.trashoflevillage.poseurk.blocks.blockentities.custom.CentrifugeBlockEntity;
-import io.github.trashoflevillage.poseurk.client.entity.ModModelLayers;
+import io.github.trashoflevillage.poseurk.blocks.entities.custom.CentrifugeBlockEntity;
 import io.github.trashoflevillage.poseurk.client.entity.models.CentifugeBlockEntityModel;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;

@@ -1,18 +1,20 @@
 package io.github.trashoflevillage.poseurk.client;
 
-import io.github.trashoflevillage.poseurk.blocks.blockentities.ModBlockEntities;
-import io.github.trashoflevillage.poseurk.blocks.blockentities.custom.CentrifugeBlockEntity;
+import io.github.trashoflevillage.poseurk.blocks.entities.ModBlockEntities;
 import io.github.trashoflevillage.poseurk.client.entity.renderers.CentrifugeBlockEntityRenderer;
 import io.github.trashoflevillage.poseurk.items.ModItems;
 import io.github.trashoflevillage.poseurk.items.custom.SyringeItem;
+import io.github.trashoflevillage.poseurk.screen.CentrifugeScreen;
+import io.github.trashoflevillage.poseurk.screen.CentrifugeScreenHandler;
+import io.github.trashoflevillage.poseurk.screen.ModScreenHandlers;
 import io.github.trashoflevillage.poseurk.util.PoseurkUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
@@ -43,5 +45,7 @@ public class PoseurkClient implements ClientModInitializer {
                                 -(0xFFFFFF - PoseurkUtil.getDNAColorOfEntityType(SyringeItem.getEntityType(stack).get(), stack)), ModItems.DNA_VIAL);
 
         BlockEntityRendererFactories.register(ModBlockEntities.CENTRIFUGE_BLOCK_ENTITY, context -> new CentrifugeBlockEntityRenderer());
+
+        HandledScreens.register(ModScreenHandlers.CENTRIFUGE_SCREEN_HANDLER, CentrifugeScreen::new);
     }
 }

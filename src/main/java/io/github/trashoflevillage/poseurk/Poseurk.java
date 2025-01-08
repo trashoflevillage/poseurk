@@ -1,11 +1,12 @@
 package io.github.trashoflevillage.poseurk;
 
 import io.github.trashoflevillage.poseurk.blocks.ModBlocks;
-import io.github.trashoflevillage.poseurk.blocks.blockentities.ModBlockEntities;
+import io.github.trashoflevillage.poseurk.blocks.entities.ModBlockEntities;
 import io.github.trashoflevillage.poseurk.items.ModComponents;
 import io.github.trashoflevillage.poseurk.items.ModItemGroups;
 import io.github.trashoflevillage.poseurk.items.ModItems;
 import io.github.trashoflevillage.poseurk.recipes.ModSpecialRecipes;
+import io.github.trashoflevillage.poseurk.screen.ModScreenHandlers;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class Poseurk implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+		ModScreenHandlers.registerScreenHandlers();
 		ModBlocks.registerModBlocks();
 		ModBlockEntities.registerBlockEntities();
 		ModItems.registerModItems();

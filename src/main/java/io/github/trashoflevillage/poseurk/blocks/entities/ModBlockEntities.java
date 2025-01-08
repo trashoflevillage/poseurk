@@ -1,8 +1,8 @@
-package io.github.trashoflevillage.poseurk.blocks.blockentities;
+package io.github.trashoflevillage.poseurk.blocks.entities;
 
 import io.github.trashoflevillage.poseurk.Poseurk;
 import io.github.trashoflevillage.poseurk.blocks.ModBlocks;
-import io.github.trashoflevillage.poseurk.blocks.blockentities.custom.CentrifugeBlockEntity;
+import io.github.trashoflevillage.poseurk.blocks.entities.custom.CentrifugeBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
