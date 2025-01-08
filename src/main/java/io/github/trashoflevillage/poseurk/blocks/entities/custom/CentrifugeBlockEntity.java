@@ -131,7 +131,9 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
     }
 
     private void craftItem() {
-        removeStack(CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT);
+        ItemStack newFuelStack = getStack(CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT);
+        newFuelStack.setCount(getStack(CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT).getCount() - 1);
+        setStack(CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT, newFuelStack);
         for (int i = CentrifugeScreenHandler.FIRST_BLOOD_INPUT_SLOT; i < SLOTS; i++) {
             if (getStack(i).isOf(ModItems.BLOOD_VIAL)) {
                 ItemStack bloodStack = getStack(i);
@@ -160,7 +162,7 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
 
     @Override
     public int getMaxCountPerStack() {
-        return 1;
+        return 64;
     }
 
     @Override
@@ -172,9 +174,8 @@ public class CentrifugeBlockEntity extends BlockEntity implements ExtendedScreen
 
     @Override
     public boolean canInsert(int slot, ItemStack stack, @Nullable Direction side) {
-        if (slot >= CentrifugeScreenHandler.FIRST_BLOOD_INPUT_SLOT)
-            return getStack(slot).getCount() < 1;
-        if (slot == CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT) return stack.isOf(Items.WIND_CHARGE) && getStack(slot).getCount() < 1;
+        if (side == Direction.UP && slot == CentrifugeScreenHandler.WIND_CHARGE_INPUT_SLOT) return getStack(slot).getCount() < getMaxCountPerStack();
+        if (side != Direction.UP && slot >= CentrifugeScreenHandler.FIRST_BLOOD_INPUT_SLOT) return getStack(slot).getCount() < 1;
         return false;
     }
 }

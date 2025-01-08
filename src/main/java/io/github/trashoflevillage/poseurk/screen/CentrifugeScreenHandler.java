@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
@@ -38,7 +39,7 @@ public class CentrifugeScreenHandler extends ScreenHandler {
         this.propertyDelegate = arrayPropertyDelegate;
         this.blockEntity = (CentrifugeBlockEntity) blockEntity;
 
-        this.addSlot(new Slot(inventory, WIND_CHARGE_INPUT_SLOT, 79, 10));
+        this.addSlot(new FuelSlot(inventory, WIND_CHARGE_INPUT_SLOT, 79, 10));
         this.addSlot(new Slot(inventory, FIRST_BLOOD_INPUT_SLOT, 56, 56));
         this.addSlot(new Slot(inventory, FIRST_BLOOD_INPUT_SLOT + 1, 79, 63));
         this.addSlot(new Slot(inventory, FIRST_BLOOD_INPUT_SLOT + 2, 102, 56));
@@ -103,5 +104,20 @@ public class CentrifugeScreenHandler extends ScreenHandler {
         int progressArrowSize = 26; // This is the width in pixels of your arrow
 
         return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
+    }
+
+    static class FuelSlot extends Slot {
+        public FuelSlot(Inventory inventory, int i, int j, int k) {
+            super(inventory, i, j, k);
+        }
+
+        @Override
+        public boolean canInsert(ItemStack stack) {
+            return matches(stack);
+        }
+
+        public static boolean matches(ItemStack stack) {
+            return stack.isOf(Items.WIND_CHARGE);
+        }
     }
 }
