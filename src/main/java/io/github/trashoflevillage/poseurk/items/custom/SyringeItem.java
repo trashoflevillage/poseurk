@@ -23,6 +23,7 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Style;
@@ -96,10 +97,14 @@ public class SyringeItem extends Item {
                     if (potentialUsername != null) {
                         text = Text.of(potentialUsername).getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                     } else {
-                        ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
-                        if (playerEntity != null) {
-                            text = playerEntity.getName()
-                                    .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                        if (MinecraftClient.getInstance().getServer() != null) {
+                            ServerPlayerEntity playerEntity = MinecraftClient.getInstance().getServer().getPlayerManager().getPlayer(uuid);
+                            if (playerEntity != null) {
+                                text = playerEntity.getName()
+                                        .getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                            } else {
+                                text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
+                            }
                         } else {
                             text = getEntityType(stack).get().getName().getWithStyle(Style.EMPTY.withColor(Colors.LIGHT_GRAY)).getFirst();
                         }

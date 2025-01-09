@@ -31,7 +31,7 @@ public class Poseurk implements ModInitializer {
 		ModBlockEntities.registerBlockEntities();
 		ModItems.registerModItems();
 		ModItemGroups.registerItemGroups();
-		ModComponents.registerComponents();
 		ModSpecialRecipes.registerSpecialRecipes();
+		ModComponents.registerComponents();
 	}
 }

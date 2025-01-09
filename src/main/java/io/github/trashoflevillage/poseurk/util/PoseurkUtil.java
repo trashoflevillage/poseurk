@@ -187,14 +187,6 @@ public class PoseurkUtil {
         }
     }
 
-    public static UUID getUUIDFromStringSafely(String name) {
-        try {
-            return UUID.fromString(name);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public static String getUsernameFromUUID(UUID uuid) {
         if (!playerUsernameCache.containsKey(uuid)) playerUsernameCache.put(uuid, fetchUsernameFromUUID(uuid));
         return playerUsernameCache.get(uuid);

@@ -2,6 +2,7 @@ package io.github.trashoflevillage.poseurk.client;
 
 import io.github.trashoflevillage.poseurk.blocks.entities.ModBlockEntities;
 import io.github.trashoflevillage.poseurk.client.entity.renderers.CentrifugeBlockEntityRenderer;
+import io.github.trashoflevillage.poseurk.items.ModComponents;
 import io.github.trashoflevillage.poseurk.items.ModItems;
 import io.github.trashoflevillage.poseurk.items.custom.SyringeItem;
 import io.github.trashoflevillage.poseurk.screen.CentrifugeScreen;
